@@ -139,7 +139,7 @@ def minimax(board):
 
 def maxValue(board, action):
     if terminal(result(board, action)):
-        return utility(board), None
+        return utility(result(board, action)), None
 
     if player == O:    
         val = -math.inf
@@ -150,7 +150,7 @@ def maxValue(board, action):
 
 def minValue(board, action):
     if terminal(result(board, action)):
-        return utility(board), None
+        return utility(result(board, action)), None
 
     if player == X:
         val = math.inf
