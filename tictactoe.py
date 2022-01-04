@@ -47,11 +47,11 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    possibleMoves = []
-    for i in range(len(board)):
+    possibleMoves = set()
+    for i in range(0, len(board)):
         for j in range(len(board[0])):
             if board[i][j] == EMPTY:
-                possibleMoves.append([i, j])
+                possibleMoves.add((i, j))
     return possibleMoves
 
 
@@ -59,9 +59,11 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    if action not in actions(board):
-        raise Exception("Invalid Action!!!")
     
+        
+    if action not in actions(board):
+      raise Exception("Invalid Action")
+   
     copyBoard = copy.deepcopy(board)
     copyBoard[action[0]][action[1]] = player(board)
     return copyBoard
@@ -120,32 +122,38 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    if terminal(board):
-        return None
+    if player(board) == X:
+        val = -math.inf
+        for move in actions(board):
+            value = minValue(board, move)
+            if val < value:
+                val = value
     else:
-        if player(board) == X:
-            value, move = maxValue(board)
-            return move
-        else:
-            value, move = minValue(board)
-            return move
+        val = math.inf
+        for move in actions(board):
+            value = maxValue(board, move)
+            if val > value:
+                val = value
+    return move
 
 
-def maxValue(board):
-    if terminal(board):
-        return utility(board), None
-    
-    val = -math.inf
-    for action in actions(board):
-        val = max(val, minValue(result(board, action)))
-    return val
-
-
-def minValue(board):
-    if terminal(board):
+def maxValue(board, action):
+    if terminal(result(board, action)):
         return utility(board), None
 
-    val = math.inf
-    for action in actions(board):
-        val = min(val, maxValue(result(board, action)))
-    return val
+    if player == O:    
+        val = -math.inf
+        for action in actions(board):
+            val = max(val, minValue(result(board, action), X))
+        return val
+
+
+def minValue(board, action):
+    if terminal(result(board, action)):
+        return utility(board), None
+
+    if player == X:
+        val = math.inf
+        for action in actions(board):
+            val = min(val, maxValue(result(board, action), O))
+        return val
